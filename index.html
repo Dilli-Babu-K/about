@@ -4,9 +4,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>About Recova</title>
+    
+    <!-- Fix 404 Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 fill=%22white%22>R</text></svg>">
+
+    <!-- Suppress Tailwind CDN production warning -->
+    <script>
+      (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+          if (arguments[0] && typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') > -1) {
+            return;
+          }
+          originalWarn.apply(console, arguments);
+        };
+      })();
+    </script>
+
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Babel for in-browser compilation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
     <style>
-      /* Smooth scrolling for anchor links */
       html {
         scroll-behavior: smooth;
       }
@@ -15,17 +35,242 @@
         -moz-osx-font-smoothing: grayscale;
       }
     </style>
-  <script type="importmap">
+
+    <script type="importmap">
 {
   "imports": {
-    "react/": "https://esm.sh/react@^19.2.4/",
-    "react": "https://esm.sh/react@^19.2.4",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/"
+    "react": "https://esm.sh/react@18.2.0",
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?deps=react@18.2.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/"
   }
 }
 </script>
-</head>
+  </head>
   <body class="bg-black text-white antialiased">
     <div id="root"></div>
+
+    <script type="text/babel" data-type="module">
+      import React from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      // --- Constants ---
+      const RECOVA_CONTENT = {
+        header: "Recova",
+        title: "About Recova",
+        intro: {
+          heading: "What is Recova?",
+          body: [
+            "Recova is a recovery awareness app designed to help active people understand how ready their body feels for training on a given day.",
+            "Instead of using wearables or medical data, Recova focuses on how your body perceives recovery based on two everyday signals:",
+          ],
+          list: [
+            "How hard you trained recently",
+            "How well you slept last night"
+          ],
+          conclusion: "Recova does not claim to measure your exact physical recovery. It provides a directional signal to help you become more aware of fatigue, strain, and readiness over time."
+        },
+        audience: {
+          heading: "Who is Recova for?",
+          body: "Recova is built for people who train regularly and want a simple way to stay aware of recovery trends without wearing devices. This includes:",
+          list: [
+            "Gym and strength-training athletes",
+            "Runners and endurance athletes",
+            "Calisthenics and bodyweight athletes",
+            "Anyone training consistently and managing fatigue"
+          ]
+        },
+        howItWorks: {
+          heading: "How Recova Works",
+          body: [
+            "Recova works by combining recent training stress with sleep quality to estimate how ready your body may feel today.",
+            "Each day, Recova looks at:"
+          ],
+          inputs: [
+            "Training intensity from the previous day (how much strain your body experienced)",
+            "Sleep quality from last night (how well your body had time to recover)"
+          ],
+          explanation: "These two inputs are blended into a single recovery readiness score that reflects:",
+          factors: [
+            "Long-term capacity built over time",
+            "Short-term readiness influenced by rest and fatigue"
+          ],
+          note: "Because recovery is a continuous biological process, Recova updates your readiness only when new information is available, such as sleep or training logs. This approach helps avoid guessing, sudden fluctuations, or overconfidence based on incomplete data."
+        },
+        philosophy: {
+          heading: "Why Perceived Recovery Matters",
+          body: [
+            "Recovery is not something that can be perfectly measured without advanced equipment.",
+            "Many athletes rely on perceived recovery readiness — how rested, fatigued, or prepared they feel — to guide daily decisions.",
+            "Recova is built around this idea: consistent reflection leads to better awareness, and better awareness leads to better decisions."
+          ]
+        },
+        disclaimer: {
+          heading: "What Recova Is NOT",
+          body: [
+            "Recova is not a medical device.",
+            "It does not diagnose conditions, predict injuries, or replace professional advice.",
+            "All insights provided by Recova are informational and intended to support self-awareness, not medical decisions."
+          ]
+        },
+        footer: {
+          support: "Contact Support",
+          privacy: "Privacy Policy",
+          terms: "Terms & Conditions",
+          copyright: "© 2024 Recova. All rights reserved."
+        }
+      };
+
+      // --- Components ---
+      const Header = ({ title }) => {
+        return (
+          <header className="sticky top-0 z-50 w-full bg-black/90 backdrop-blur-sm border-b border-zinc-800">
+            <div className="max-w-xl mx-auto px-6 h-16 flex items-center justify-between">
+              <h1 className="text-lg font-bold text-white tracking-wide uppercase">
+                {title}
+              </h1>
+              <div className="w-6" aria-hidden="true" />
+            </div>
+          </header>
+        );
+      };
+
+      const Footer = () => {
+        const { footer } = RECOVA_CONTENT;
+        return (
+          <footer className="mt-16 pt-8 pb-12 border-t border-zinc-800 text-center">
+            <nav className="flex flex-col space-y-4 mb-8">
+              <a href="#" className="text-zinc-500 hover:text-white transition-colors text-sm">
+                {footer.support}
+              </a>
+              <a href="#" className="text-zinc-500 hover:text-white transition-colors text-sm">
+                {footer.privacy}
+              </a>
+              <a href="#" className="text-zinc-500 hover:text-white transition-colors text-sm">
+                {footer.terms}
+              </a>
+            </nav>
+            <p className="text-xs text-zinc-700">
+              {footer.copyright}
+            </p>
+          </footer>
+        );
+      };
+
+      const Section = ({ title, children, className = "" }) => {
+        return (
+          <section className={`mb-12 ${className}`}>
+            <h2 className="text-xl font-semibold text-white mb-4 tracking-tight">
+              {title}
+            </h2>
+            <div className="text-zinc-400 leading-relaxed space-y-4">
+              {children}
+            </div>
+          </section>
+        );
+      };
+
+      // --- App ---
+      const App = () => {
+        const { intro, audience, howItWorks, philosophy, disclaimer } = RECOVA_CONTENT;
+
+        return (
+          <div className="min-h-screen bg-black flex flex-col font-sans">
+            <Header title={RECOVA_CONTENT.header} />
+
+            <main className="flex-grow w-full max-w-xl mx-auto px-6 py-8">
+              
+              {/* Main Title Area */}
+              <div className="mb-10 pt-4">
+                <h1 className="text-3xl font-bold text-white mb-2 tracking-tight">
+                  {RECOVA_CONTENT.title}
+                </h1>
+                <div className="h-1 w-12 bg-zinc-800 rounded-full"></div>
+              </div>
+
+              {/* What is Recova? */}
+              <Section title={intro.heading}>
+                {intro.body.map((paragraph, idx) => (
+                  <p key={idx}>{paragraph}</p>
+                ))}
+                <ul className="list-disc pl-5 space-y-2 text-zinc-300">
+                  {intro.list.map((item, idx) => (
+                    <li key={idx}>{item}</li>
+                  ))}
+                </ul>
+                <p className="italic text-zinc-500 text-sm border-l-2 border-zinc-800 pl-4 py-1">
+                  {intro.conclusion}
+                </p>
+              </Section>
+
+              {/* Who is Recova for? */}
+              <Section title={audience.heading}>
+                <p>{audience.body}</p>
+                <ul className="grid grid-cols-1 gap-2 mt-2">
+                  {audience.list.map((item, idx) => (
+                    <li key={idx} className="flex items-center space-x-2 text-zinc-300">
+                      <span className="w-1.5 h-1.5 bg-zinc-600 rounded-full flex-shrink-0" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </Section>
+
+              {/* How Recova Works */}
+              <Section title={howItWorks.heading}>
+                <p>{howItWorks.body[0]}</p>
+                <p>{howItWorks.body[1]}</p>
+                <ul className="list-disc pl-5 space-y-2 text-zinc-300">
+                  {howItWorks.inputs.map((item, idx) => (
+                    <li key={idx}>{item}</li>
+                  ))}
+                </ul>
+                <p className="mt-4">{howItWorks.explanation}</p>
+                <ul className="list-disc pl-5 space-y-2 text-zinc-300">
+                  {howItWorks.factors.map((item, idx) => (
+                    <li key={idx}>{item}</li>
+                  ))}
+                </ul>
+                <div className="bg-zinc-900/50 p-4 rounded-lg mt-4 border border-zinc-800">
+                  <p className="text-sm text-zinc-400">{howItWorks.note}</p>
+                </div>
+              </Section>
+
+              {/* Why Perceived Recovery Matters */}
+              <Section title={philosophy.heading}>
+                {philosophy.body.map((paragraph, idx) => (
+                  <p key={idx} className={idx === philosophy.body.length - 1 ? "font-medium text-zinc-300" : ""}>
+                    {paragraph}
+                  </p>
+                ))}
+              </Section>
+
+              {/* Disclaimer */}
+              <section className="mb-12 pt-6 border-t border-zinc-900">
+                <h2 className="text-lg font-semibold text-zinc-500 mb-4 uppercase tracking-wider text-xs">
+                  {disclaimer.heading}
+                </h2>
+                <div className="text-zinc-500 text-sm space-y-3">
+                  {disclaimer.body.map((paragraph, idx) => (
+                    <p key={idx}>{paragraph}</p>
+                  ))}
+                </div>
+              </section>
+
+            </main>
+
+            <Footer />
+          </div>
+        );
+      };
+
+      // --- Mount ---
+      const root = createRoot(document.getElementById('root'));
+      root.render(
+        <React.StrictMode>
+          <App />
+        </React.StrictMode>
+      );
+    </script>
   </body>
 </html>
